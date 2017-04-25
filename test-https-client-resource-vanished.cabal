@@ -20,15 +20,28 @@ source-repository head
 
 executable https-server
   main-is:             https-server.hs
-  hs-source-dir:       main
+  hs-source-dirs:      main
   default-language:    Haskell2010
   ghc-options:         -Wall -threaded -O2 -rtsopts -with-rtsopts "-T -N"
 
   build-depends:       base                     >= 4.8          && < 4.10
-                     , bytestring               == 0.10.*
-                     , case-insensitive         == 1.2.*
-                     , http-types               == 0.9.*
-                     , wai                      == 3.2.*
-                     , warp                     == 3.2.*
-                     , warp-tls                 == 3.2.*
+                     , bytestring
+                     , case-insensitive
+                     , http-types
+                     , wai
+                     , warp
+                     , warp-tls
 
+
+executable https-client
+  main-is:             https-client.hs
+  hs-source-dirs:      main
+  default-language:    Haskell2010
+  ghc-options:         -Wall -threaded -O2 -rtsopts -with-rtsopts "-T -N"
+
+  build-depends:       base                     >= 4.8          && < 4.10
+                     , bytestring
+                     , conduit
+                     , connection
+                     , http-conduit
+                     , resourcet
