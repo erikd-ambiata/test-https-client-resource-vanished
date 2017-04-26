@@ -10,6 +10,6 @@ if test ! -f ${server} ; then
   fi
 
 while /bin/true ; do
-  timeout 30 ${server}
-  sleep 2
+  timeout 1 ${server}
+  # sleep 2
   done
