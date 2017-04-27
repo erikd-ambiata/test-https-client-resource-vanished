@@ -28,11 +28,19 @@ runTest manager request = do
   res <- try $ runBodyLength manager request
   case res of
     Left (HttpExceptionRequest _ ex) -> httpExceptionHandler ex
-    Left (InvalidUrlException _ _) -> error $ show res
+    Left (InvalidUrlException _ _) -> error $ "\nInvalidUrlException :" ++ show res
     Right len ->
         if len == 10492720
           then do singleChar '.'
-          else print len
+          else putStrLn $ "\nShort read: " ++ show len
+
+runBodyLength :: Manager -> Request -> IO Int
+runBodyLength manager request =
+  runResourceT $ do
+    resp <- http request manager
+    -- Just calculate and return the body length.
+    responseBody resp $$+- DCL.fold (\ len bs -> len + BS.length bs) 0
+
 
 httpExceptionHandler :: HttpExceptionContent -> IO ()
 httpExceptionHandler ex =
@@ -64,15 +72,8 @@ internalExceptionHandler :: SomeException -> IO ()
 internalExceptionHandler ex =
   case fromException ex of
     Just (HostCannotConnect _ _) -> singleChar 'H' >> threadDelay (5 * 1000)
-    Nothing -> putStrLn $ "\n" ++ show ex
+    Nothing -> putStrLn $ "\ninternalExceptionHandler: " ++ show ex
 
-
-runBodyLength :: Manager -> Request -> IO Int
-runBodyLength manager request =
-  runResourceT $ do
-    resp <- http request manager
-    -- Just calculate and return the body length.
-    responseBody resp $$+- DCL.fold (\ len bs -> len + BS.length bs) 0
 
 singleChar :: Char -> IO ()
 singleChar c = putChar c >> hFlush stdout
