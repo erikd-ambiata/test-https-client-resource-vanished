@@ -12,10 +12,12 @@ import           Network.Connection -- (TLSSettings (..))
 import           Network.HTTP.Conduit
 
 import           System.IO
+import           System.Environment
 
 main :: IO ()
 main = do
-  request <- parseRequest "https://localhost:3000/"
+  hostaddr <- head <$> getArgs
+  request <- parseRequest $ "https://" ++ hostaddr ++ ":3000/"
   let settings = mkManagerSettings (TLSSettingsSimple True False False) Nothing
   manager <- newManager settings
   forever $ runTest manager request
