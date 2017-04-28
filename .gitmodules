@@ -1,0 +1,3 @@
+[submodule "lib/http-client"]
+	path = lib/http-client
+	url = https://github.com/erikd/http-client
