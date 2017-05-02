@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -69,11 +70,16 @@ httpExceptionHandler ex =
 
 
 internalExceptionHandler :: SomeException -> IO ()
+#if MIN_VERSION_connection (0,2,8)
 internalExceptionHandler ex =
-  case fromException ex of
-    Just (HostCannotConnect _ _) -> singleChar 'H' >> threadDelay (5 * 1000)
-    Nothing -> putStrLn $ "\ninternalExceptionHandler: " ++ show ex
-
+   case fromException ex of
+     Just (HostCannotConnect _ _) -> singleChar 'H' >> threadDelay (5 * 1000)
+     Nothing -> putStrLn $ "\ninternalExceptionHandler: " ++ show ex
+#else
+internalExceptionHandler ex = do
+  putStrLn $ "\ninternalExceptionHandler: " ++ show ex
+  threadDelay (5 * 1000)
+#endif
 
 singleChar :: Char -> IO ()
 singleChar c = putChar c >> hFlush stdout
