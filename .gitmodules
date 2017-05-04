@@ -4,3 +4,6 @@
 [submodule "lib/tls"]
 	path = lib/tls
 	url = https://github.com/erikd-ambiata/hs-tls
+[submodule "lib/connection"]
+	path = lib/connection
+	url = https://github.com/erikd-ambiata/hs-connection
