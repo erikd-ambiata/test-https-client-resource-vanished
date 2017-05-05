@@ -46,6 +46,7 @@ tryIO action = withAsync action waitCatch
 someExceptionHandler :: SomeException -> IO ()
 someExceptionHandler se
   | Just (HttpExceptionRequest _ e :: HttpException) <- fromException se = httpExceptionHandler e
+  | Just (e :: IOException)                          <- fromException se = ioExceptionHandler e
   | otherwise                                                            = abortException "someExceptionHandler" se
 
 httpExceptionHandler :: HttpExceptionContent -> IO ()
@@ -57,6 +58,11 @@ httpExceptionHandler ex =
     internalExceptionHandler :: SomeException -> IO ()
     internalExceptionHandler se =
       abortException "internalExceptionHandler" se
+
+ioExceptionHandler :: IOException -> IO ()
+ioExceptionHandler e =
+  putStrLn $ "IOException : " ++ show e
+
 
 abortException :: String -> SomeException -> IO ()
 abortException name se = do
