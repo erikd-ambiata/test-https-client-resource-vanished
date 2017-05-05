@@ -56,8 +56,12 @@ httpExceptionHandler ex =
     _ -> pure ()
   where
     internalExceptionHandler :: SomeException -> IO ()
-    internalExceptionHandler se =
-      abortException "internalExceptionHandler" se
+    internalExceptionHandler se
+      | Just (e :: IOException) <- fromException se = putStrLn $ "HttpException : " ++ show e
+      | otherwise                                   = pure ()
+
+
+
 
 ioExceptionHandler :: IOException -> IO ()
 ioExceptionHandler e =
