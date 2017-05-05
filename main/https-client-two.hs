@@ -47,10 +47,15 @@ tryIO action = withAsync action waitCatch
 
 someExceptionHandler :: SomeException -> IO ()
 someExceptionHandler se
-  | Just (e :: TLSError)                             <- fromException se = putStrLn $ "TLSError : " ++ show e
   | Just (HttpExceptionRequest _ e :: HttpException) <- fromException se = httpExceptionHandler e
   | Just (e :: IOException)                          <- fromException se = putStrLn $ "IOException : " ++ show e
+  | Just (e :: TLSError)                             <- fromException se = tlsErrorHandler e
   | otherwise                                                            = abortException "someExceptionHandler" se
+
+
+tlsErrorHandler :: TLSError -> IO ()
+tlsErrorHandler e = putStrLn $ "TLSError : " ++ show e
+
 
 httpExceptionHandler :: HttpExceptionContent -> IO ()
 httpExceptionHandler ex =
