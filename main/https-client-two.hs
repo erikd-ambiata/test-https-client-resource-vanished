@@ -66,6 +66,7 @@ httpExceptionHandler ex =
     internalExceptionHandler :: SomeException -> IO ()
     internalExceptionHandler se
       | Just (e :: IOException) <- fromException se = putStrLn $ "HttpException : " ++ show e
+      | Just (e :: TLSError)    <- fromException se = putStrLn $ "HttpException (TLSError) : " ++ show e
       | otherwise                                   = pure ()
 
 
