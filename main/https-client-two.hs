@@ -50,6 +50,7 @@ someExceptionHandler se
   | Just (HttpExceptionRequest _ e :: HttpException) <- fromException se = httpExceptionHandler e
   | Just (e :: IOException)                          <- fromException se = putStrLn $ "IOException : " ++ show e
   | Just (e :: TLSError)                             <- fromException se = tlsErrorHandler e
+  | Just (e :: TLSException)                         <- fromException se = putStrLn $ "TLSException : " ++ show e
   | otherwise                                                            = abortException "someExceptionHandler" se
 
 
