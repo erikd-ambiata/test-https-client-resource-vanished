@@ -18,6 +18,7 @@ import           System.Exit
 
 main :: IO ()
 main = do
+  putStrLn "Running https-client-two"
   hostaddr <- head <$> getArgs
   request <- parseRequest $ "https://" ++ hostaddr ++ ":3000/"
   let settings = mkManagerSettings (TLSSettingsSimple True False False) Nothing
