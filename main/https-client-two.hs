@@ -29,7 +29,7 @@ runTest manager request = do
   res <- tryIO $ runBodyLength manager request
   case res of
     Left se -> someExceptionHandler se
-    Right len -> print len
+    Right _ -> pure ()
 
 runBodyLength :: Manager -> Request -> IO Int
 runBodyLength manager request =
