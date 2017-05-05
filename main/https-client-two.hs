@@ -11,6 +11,7 @@ import           Data.Conduit
 import qualified Data.Conduit.List as DCL
 import           Network.Connection -- (TLSSettings (..))
 import           Network.HTTP.Conduit
+import           Network.TLS (TLSError)
 
 import           System.Environment
 import           System.Exit
@@ -47,6 +48,7 @@ someExceptionHandler :: SomeException -> IO ()
 someExceptionHandler se
   | Just (HttpExceptionRequest _ e :: HttpException) <- fromException se = httpExceptionHandler e
   | Just (e :: IOException)                          <- fromException se = ioExceptionHandler e
+  | Just (e :: TLSError)                             <- fromException se = tlsErrorHandler e
   | otherwise                                                            = abortException "someExceptionHandler" se
 
 httpExceptionHandler :: HttpExceptionContent -> IO ()
@@ -60,6 +62,9 @@ httpExceptionHandler ex =
       | Just (e :: IOException) <- fromException se = putStrLn $ "HttpException : " ++ show e
       | otherwise                                   = pure ()
 
+tlsErrorHandler :: TLSError -> IO ()
+tlsErrorHandler e =
+  putStrLn $ "TLSError : " ++ show e
 
 
 

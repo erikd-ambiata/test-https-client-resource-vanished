@@ -59,3 +59,4 @@ executable https-client-two
                      , connection
                      , http-conduit
                      , resourcet
+                     , tls
